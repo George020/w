@@ -1,81 +1,44 @@
-<!DOCTYPE html>
-<html lang="zh-cmn-hans">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge, chrome=1">
-<title>正在打开支付宝，请稍候……</title>
-</head>
-<body>
-</body>
-</html>
+ /**
+     * 支付宝支付
+     * @param pay_param 支付服务生成的支付参数
+     */
+    private void doAlipay(String pay_param) {
+        new Alipay(this, pay_param, new Alipay.AlipayResultCallBack() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(getApplication(), "支付成功", Toast.LENGTH_SHORT).show();
+            }
 
-<script> 
-var _0 = "http://mcd.fwc.freemud.cn/180503mfzcq/index.html";  //替换成你的支付宝红包链接
-var _1 = "http://mcd.fwc.freemud.cn/180503mfzcq/index.html";  //替换成你的支付宝红包链接
-function is_weixin() {
-    if (/MicroMessenger/i.test(navigator.userAgent)) {
-        return true
-    } else {
-        return false
+            @Override
+            public void onDealing() {
+                Toast.makeText(getApplication(), "支付处理中...", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(int error_code) {
+                switch (error_code) {
+                    case Alipay.ERROR_RESULT:
+                        Toast.makeText(getApplication(), "支付失败:支付结果解析错误", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case Alipay.ERROR_NETWORK:
+                        Toast.makeText(getApplication(), "支付失败:网络连接错误", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case Alipay.ERROR_PAY:
+                        Toast.makeText(getApplication(), "支付错误:支付码支付失败", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    default:
+                        Toast.makeText(getApplication(), "支付错误", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(getApplication(), "支付取消", Toast.LENGTH_SHORT).show();
+            }
+        }).doPay();
     }
-}
-function is_android() {
-    var ua = navigator.userAgent.toLowerCase();
-    if (ua.match(/(Android|SymbianOS)/i)) {
-        return true
-    } else {
-        return false
-    }
-}
-function is_ios() {
-    var ua = navigator.userAgent.toLowerCase();
-    if (/iphone|ipad|ipod/.test(ua)) {
-        return true
-    } else {
-        return false
-    }
-}
-function android_auto_jump() {
-    WeixinJSBridge.invoke("jumpToInstallUrl", {},
-    function(e) {});
-    window.close();
-    WeixinJSBridge.call("closeWindow")
-}
-function ios_auto_jump() {
-    if (_0 != "") {
-        location.href = _0
-    } else {
-        window.close();
-        WeixinJSBridge.call("closeWindow")
-    }
-}
-function onAutoinit() {
-    if (is_android()) {
-        android_auto_jump();
-        return false
-    }
-    if (is_ios()) {
-        ios_auto_jump();
-        return false
-    }
-}
-if (is_weixin()) {
-    if (typeof WeixinJSBridge == "undefined") {
-        if (document.addEventListener) {
-            document.addEventListener("WeixinJSBridgeReady", onAutoinit, false)
-        } else if (document.attachEvent) {
-            document.attachEvent("WeixinJSBridgeReady", onAutoinit);
-            document.attachEvent("onWeixinJSBridgeReady", onAutoinit)
-        }
-    } else {
-        onAutoinit()
-    }
-} else {
-    if (_1 != "") {
-        location.href = _1
-    } else {
-        window.close()
-    }
-}
-</script>
